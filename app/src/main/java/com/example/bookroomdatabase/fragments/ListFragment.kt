@@ -21,6 +21,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookroomdatabase.R
@@ -28,6 +29,8 @@ import com.example.bookroomdatabase.adapter.BookAdapter
 import com.example.bookroomdatabase.databinding.FragmentListBinding
 import com.example.bookroomdatabase.helper.Helper.showDeleteDialog
 import com.example.bookroomdatabase.viewmodel.BookViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class ListFragment : Fragment() {
 
@@ -53,9 +56,22 @@ class ListFragment : Fragment() {
         }
         setHasOptionsMenu(true)
 
+        /**
+         * Option 1 : use LiveData from ViewModel
+         */
         bookViewModel.listOfBooks.observe(viewLifecycleOwner, Observer { list ->
             bookAdapter.submitList(list)
         })
+
+        /**
+         * Option 2 : use Flow directly instead of LiveData through ViewModel
+         * need to make repository public in BookViewModel file
+         */
+//        lifecycleScope.launch {
+//            bookViewModel.repository.listOfBooks.collect {
+//                bookAdapter.submitList(it)
+//            }
+//        }
 
         return binding.root
     }

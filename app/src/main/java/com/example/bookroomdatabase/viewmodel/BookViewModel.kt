@@ -26,6 +26,7 @@ import com.example.bookroomdatabase.model.Book
 import com.example.bookroomdatabase.repository.Repository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 
 class BookViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -42,7 +43,8 @@ class BookViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun getAllBooks() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.listOfBooks.collect {
+            repository.listOfBooks
+                .collect {
                 withContext(Dispatchers.Main) {
                     _listOfBooks.value = it
                 }
